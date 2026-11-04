@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estudio Come Camila</title>
+<meta name="description" content="Tarjetas, examen y guía para aprender el menú de Come Camila.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Menú Camila">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#19201B" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna de 680px; barra fija con pestañas arriba; la tarjeta de estudio imita una comanda de cocina. */
+:root {
+  --bg: #F2F4EF; --surface: #FFFFFF; --ink: #18201A; --muted: #5A665C; --line: #D8DFD5;
+  --accent: #2E6A41; --accent-2: #E1EFE4; --on-accent: #FFFFFF;
+  --mark: #A86F05; --mark-2: #FAEFD6;
+  --bad: #B23B2A; --bad-2: #F8E2DD;
+  --f-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101511; --surface: #19201B; --ink: #E5EBE5; --muted: #9AA69C; --line: #2A342C;
+    --accent: #74C08B; --accent-2: #1E3224; --on-accent: #0C1910;
+    --mark: #E8B44C; --mark-2: #392D13;
+    --bad: #EC7C67; --bad-2: #3A1F1A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101511; --surface: #19201B; --ink: #E5EBE5; --muted: #9AA69C; --line: #2A342C;
+  --accent: #74C08B; --accent-2: #1E3224; --on-accent: #0C1910;
+  --mark: #E8B44C; --mark-2: #392D13;
+  --bad: #EC7C67; --bad-2: #3A1F1A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--mark); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.muted { color: var(--muted); }
+
+.wrap { max-width: 680px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Barra superior */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top-in { padding-block: 12px 0; display: grid; gap: 10px; }
+.brand-k { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.brand h1 { font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); }
+.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 4px 9px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.tabs button[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+main.wrap { padding-block: 20px 8px; }
+.view { display: grid; gap: 16px; }
+
+/* Bloques */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 14px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.h-display { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.45rem, 4.6vw, 1.9rem); line-height: 1.15; letter-spacing: -.015em; }
+.lead { color: var(--muted); }
+.note { color: var(--muted); font-size: .92rem; }
+.warn { background: var(--mark-2); color: var(--ink); border-left: 4px solid var(--mark); padding: 10px 12px; border-radius: 6px; font-size: .95rem; }
+.panel h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; }
+.howto ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.counts div { background: var(--bg); border-radius: 8px; padding: 10px 12px; display: grid; }
+.counts b { font-family: var(--f-display); font-weight: 800; font-size: 1.7rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.counts span { font-size: .85rem; color: var(--muted); }
+
+.meter, .bar { position: relative; display: block; height: 10px; border-radius: 99px; background: var(--bg); overflow: hidden; border: 1px solid var(--line); }
+.meter span, .bar span { position: absolute; inset: 0 auto 0 0; border-radius: 99px; }
+.m-seen { background: var(--accent-2); }
+.m-mast { background: var(--accent); }
+.meter-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem; color: var(--muted); }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.sw-mast { background: var(--accent); }
+.sw-seen { background: var(--accent-2); border: 1px solid var(--line); }
+
+/* Botones */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; cursor: pointer; text-align: center; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.big { width: 100%; min-height: 54px; font-size: 1.05rem; }
+.btn.ghost { justify-self: start; color: var(--muted); }
+.btn.danger { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+.link { justify-self: center; background: none; border: 0; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; padding: 8px; cursor: pointer; }
+kbd { font-family: var(--f-mono); font-size: 11px; padding: 1px 5px; border-radius: 4px; border: 1px solid currentColor; opacity: .7; }
+@media (hover: none) { kbd { display: none; } }
+
+.progress { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress span { display: block; height: 100%; background: var(--accent); transition: width .25s ease; }
+
+/* Comanda (tarjeta de estudio) */
+.ticket { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0 22px 22px; display: grid; gap: 10px; box-shadow: 0 1px 0 var(--line), 0 10px 24px -18px rgba(0,0,0,.35); }
+.tk-head { display: flex; justify-content: space-between; gap: 12px; margin: 0 -22px; padding: 10px 22px; border-bottom: 2px dashed var(--line); font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tk-tag { justify-self: start; font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; margin-top: 8px; }
+.tag-new { background: var(--mark-2); color: var(--ink); }
+.tag-learn { background: var(--bad-2); color: var(--ink); }
+.tag-ok { background: var(--accent-2); color: var(--ink); }
+.tk-title { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.7rem, 6vw, 2.3rem); line-height: 1.08; letter-spacing: -.02em; }
+.tk-q { font-size: 1.05rem; color: var(--muted); }
+.tk-cut { position: relative; height: 0; border-top: 2px dashed var(--line); margin: 8px -22px 4px; }
+.tk-cut::before, .tk-cut::after { content: ""; position: absolute; top: -10px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); }
+.tk-cut::before { left: -10px; clip-path: inset(0 0 0 50%); }
+.tk-cut::after { right: -10px; clip-path: inset(0 50% 0 0); }
+.tk-say { color: var(--muted); font-style: italic; min-height: 3em; }
+.tk-answer { display: grid; gap: 12px; animation: drop .2s ease-out; }
+@keyframes drop { from { opacity: .4; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.ing { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.ing li { padding-left: 18px; position: relative; }
+.ing li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
+.kv { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+.kv dt { font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.kv dd { margin: 0; min-width: 0; }
+.big { font-family: var(--f-display); font-weight: 600; font-size: 1.35rem; line-height: 1.25; }
+
+.actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.actions .btn.big { grid-column: 1 / -1; }
+.grade { flex-direction: column; gap: 2px; min-height: 60px; font-size: .95rem; line-height: 1.2; }
+.grade.bad { border-color: var(--bad); color: var(--bad); }
+.grade.mid { border-color: var(--mark); color: var(--mark); }
+.grade.good { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+/* Examen */
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 700; }
+select, input[type="search"] { width: 100%; min-height: 46px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); }
+.quiz-q { font-family: var(--f-display); font-weight: 600; font-size: 1.4rem; line-height: 1.2; }
+.quiz-sub { font-size: 1.05rem; padding: 12px 14px; border-radius: 8px; background: var(--bg); border-left: 4px solid var(--accent); }
+.opts { display: grid; gap: 8px; }
+.opt { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 52px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt span { min-width: 0; }
+.opt.right { border-color: var(--accent); background: var(--accent-2); font-weight: 700; }
+.opt.wrong { border-color: var(--bad); background: var(--bad-2); }
+.opt.dim { opacity: .55; }
+.opt:disabled { cursor: default; color: inherit; }
+.why { padding: 12px 14px; border-radius: 8px; background: var(--bg); font-size: .95rem; }
+.hist, .misses { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.hist li { display: grid; grid-template-columns: 4.5em 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.hist li span:nth-child(2) { min-width: 0; color: var(--muted); }
+.misses li { padding: 10px 0; border-bottom: 1px solid var(--line); display: grid; gap: 2px; }
+.ma { font-weight: 700; color: var(--accent); }
+
+/* Guía */
+.g-tools { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--top-h, 108px)); z-index: 3; background: var(--bg); padding-block: 4px 10px; display: grid; gap: 8px; }
+.g-nav { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.chip { flex: none; font-family: var(--f-mono); font-size: 12px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
+.chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.ok { background: var(--accent-2); color: var(--ink); }
+.chip.warn { background: var(--mark-2); color: var(--ink); }
+.g-count { font-size: .9rem; color: var(--muted); min-height: 0; }
+.g-count:empty { display: none; }
+#glist { display: grid; gap: 28px; }
+.g-stage { display: grid; gap: 18px; scroll-margin-top: 230px; }
+.g-sh { display: grid; gap: 2px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+.g-num { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.g-sh h2 { font-family: var(--f-display); font-weight: 800; font-size: 1.5rem; letter-spacing: -.01em; }
+.g-cat { display: grid; gap: 0; }
+.g-cat h3 { font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding-bottom: 6px; }
+.row-i { padding: 12px 0; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.ri-name { font-weight: 700; font-size: 1.05rem; display: flex; align-items: baseline; gap: 8px; }
+.ri-ing { min-width: 0; }
+.ri-ing .sep { color: var(--muted); }
+.ri-meta { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 2px; }
+.pill { font-size: .85rem; padding: 2px 9px; border-radius: 6px; background: var(--accent-2); color: var(--ink); }
+.pill.soft { background: var(--bg); border: 1px solid var(--line); }
+.pill.warn { background: var(--mark-2); }
+.st { flex: none; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--line); transform: translateY(-1px); }
+.st-learn { border-color: var(--mark); background: var(--mark); }
+.st-ok { border-color: var(--accent); background: var(--accent); }
+.code { font-family: var(--f-mono); font-size: 1rem; min-width: 3.2em; padding: 2px 8px; border-radius: 6px; background: var(--ink); color: var(--surface); text-align: center; }
+.hint { margin-top: 8px; padding: 12px 14px; border-radius: 8px; background: var(--mark-2); display: grid; gap: 6px; }
+.hint-t { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--mark); }
+.hint ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: .95rem; }
+.g-cat > .note { padding-top: 8px; }
+
+/* Plan */
+.weeks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.wk { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 6px; }
+.wk.now { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.wk-h { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.wk-h .chip { margin-left: auto; cursor: default; }
+.wk-f { font-size: .95rem; }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.bars li { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; font-size: .88rem; }
+.bars .bar { grid-column: 1 / -1; grid-row: 2; }
+.b-name { min-width: 0; color: var(--muted); }
+.b-num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 12px; }
+
+.foot { padding-block: 24px calc(32px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; font-size: .85rem; color: var(--muted); }
+
+/* Instalar como app */
+.install { grid-template-columns: auto 1fr auto auto; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 16px; }
+.install .ico { width: 44px; height: 44px; border-radius: 10px; }
+.install .txt { min-width: 0; font-size: .85rem; color: var(--muted); line-height: 1.35; }
+.install .txt b { display: block; font-size: 1rem; color: var(--ink); }
+.install .btn { min-height: 40px; padding: 8px 14px; }
+.install .x { background: none; border: 0; color: var(--muted); font-size: 24px; line-height: 1; padding: 4px; cursor: pointer; }
+.sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, .45); display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 480px; background: var(--surface); color: var(--ink); border-radius: 18px 18px 0 0; padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); display: grid; gap: 14px; }
+.sheet h3 { font-family: var(--f-display); font-weight: 800; font-size: 1.3rem; }
+.sheet ol { margin: 0; padding-left: 22px; display: grid; gap: 12px; }
+.sheet .share-ico { width: 18px; height: 18px; vertical-align: -3px; color: var(--accent); }
+
+@media (max-width: 420px) {
+  body { font-size: 16px; }
+  .panel { padding: 16px; }
+  .ticket { padding: 0 16px 18px; }
+  .tk-head, .tk-cut { margin-left: -16px; margin-right: -16px; }
+  .tk-head { padding-inline: 16px; }
+  .grade { font-size: .85rem; padding-inline: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media print {
+  .top, .g-tools, .foot, #v-hoy, #v-examen, #v-plan { display: none !important; }
+  #v-guia { display: grid !important; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .row-i, .hint { break-inside: avoid; }
+  .g-stage { break-before: page; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in wrap">
+    <div class="brand">
+      <p class="brand-k">Come Camila · Iván Bell</p>
+      <h1>De runner a mesero</h1>
+    </div>
+    <nav class="tabs" aria-label="Secciones">
+      <button data-tab="hoy" aria-current="page">Hoy</button>
+      <button data-tab="examen">Examen</button>
+      <button data-tab="guia">Guía</button>
+      <button data-tab="plan">Plan</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel install" id="installBar" hidden>
+    <img class="ico" src="icon-180.png" alt="">
+    <p class="txt"><b>Instala la app</b>Ábrela desde tu pantalla de inicio, aunque no haya señal.</p>
+    <button class="btn primary" id="installBtn">Instalar</button>
+    <button class="x" id="installClose" aria-label="Ahora no">&times;</button>
+  </section>
+  <div id="v-hoy" class="view"><section class="panel"><p class="lead">Cargando tus tarjetas…</p></section></div>
+  <div id="v-examen" class="view" hidden></div>
+  <div id="v-guia" class="view" hidden></div>
+  <div id="v-plan" class="view" hidden></div>
+  <noscript><p class="panel">Esta guía necesita JavaScript activado.</p></noscript>
+</main>
+
+<div class="sheet-backdrop" id="iosSheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="iosTitle">
+    <h3 id="iosTitle">Instalar en tu iPhone</h3>
+    <ol>
+      <li>Toca <b>Compartir</b> <svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg> en la barra de Safari (si no lo ves, toca <b>•••</b> y luego <b>Compartir</b>).</li>
+      <li>Desliza hacia abajo y elige <b>Agregar a inicio</b>.</li>
+      <li>Toca <b>Agregar</b>. Listo: abre <b>Menú Camila</b> desde tu pantalla de inicio.</li>
+    </ol>
+    <p class="note">Instálala antes de empezar a estudiar: lo que avances en Safari no pasa a la app instalada. Si borras el ícono, se borra tu progreso.</p>
+    <button class="btn primary big" id="iosOk">Entendido</button>
+  </div>
+</div>
+
+<footer class="foot wrap">
+  <p id="sync">Tu progreso se guarda en este teléfono. Si borras la app o los datos del navegador, se pierde.</p>
+  <p>Fuente: manual de capacitación de Come Camila, Etapas 1 a 10. Ante cualquier alergia, confirma siempre con cocina.</p>
+</footer>
+
+<script>
+  // Altura real de la barra superior, para que el buscador de la Guía quede pegado justo debajo.
+  (() => {
+    const top = document.querySelector(".top");
+    const set = () => document.documentElement.style.setProperty("--top-h", top.offsetHeight + "px");
+    set();
+    if (window.ResizeObserver) new ResizeObserver(set).observe(top);
+  })();
+</script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="pwa.js"></script>
+</body>
+</html>
