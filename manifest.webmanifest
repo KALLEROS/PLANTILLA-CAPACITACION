@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Estudio Come Camila",
-  "short_name": "Menú Camila",
-  "description": "Tarjetas, examen y guía para aprender el menú de Come Camila.",
+  "name": "Capacitación",
+  "short_name": "Capacitación",
+  "description": "Tarjetas, examen y guía para capacitar al personal del restaurante.",
   "start_url": "./#hoy",
   "scope": "./",
   "display": "standalone",
