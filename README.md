@@ -2,7 +2,7 @@
 
 App para aprender el menú de Come Camila y pasar de runner a mesero.
 
-**App:** https://kalleros.github.io/ESTUDIO-COME-CAMILA/
+**App:** https://kalleros.github.io/PLANTILLA-CAPACITACION/
 (en iPhone: Safari → Compartir → Agregar a inicio; en Android: botón **Instalar**)
 
 ## Qué trae
