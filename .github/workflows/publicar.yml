@@ -1,0 +1,45 @@
+# Publica la página con las dos versiones juntas cada vez que se suben cambios:
+#   /         → rama main (versión principal)
+#   /prueba/  → rama inicio-sesion (versión con inicio de sesión, para probar)
+# Este archivo debe ser igual en las dos ramas.
+name: Publicar app
+
+on:
+  push:
+    branches: [main, inicio-sesion]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Versión principal (main) en la raíz
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: sitio
+      - name: Versión de prueba (inicio-sesion) en /prueba/
+        uses: actions/checkout@v4
+        with:
+          ref: inicio-sesion
+          path: sitio/prueba
+      - name: Quitar lo que no es parte de la página
+        run: rm -rf sitio/.git sitio/.github sitio/prueba/.git sitio/prueba/.github
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: sitio
+      - id: deploy
+        uses: actions/deploy-pages@v4
