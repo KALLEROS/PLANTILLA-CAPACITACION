@@ -38,11 +38,13 @@ Por persona, visibles para el administrador y exportables a CSV:
 - Sin `config.js` configurado, la app corre en **modo demostración** igual que `main`.
 
 ## 8. Lo que tiene que hacer el dueño de las cuentas
-1. Crear un proyecto en supabase.com y pasar la **Project URL** y la **anon public key**. Esa llave es pública por diseño; la protección la dan las reglas RLS.
-2. Crear el cliente OAuth de Google (Google Cloud Console) y pegar el Client ID y el secreto en Supabase → Authentication → Providers → Google. El secreto no se comparte con nadie más.
-3. Correr `supabase/schema.sql` en el SQL Editor y dar de alta la primera organización y su administrador.
+1. ✅ Crear un proyecto en supabase.com y pasar la **Project URL** y la **llave publicable**. Esa llave es pública por diseño; la protección la dan las reglas RLS.
+2. ✅ Crear el cliente OAuth de Google (Google Cloud Console) y pegar el Client ID y el secreto en Supabase → Authentication → Providers → Google. El secreto no se comparte con nadie más.
+3. ✅ Correr `supabase/schema.sql` en el SQL Editor y dar de alta la primera organización y su administrador.
+4. ⬜ Publicar la app de Google (pasarla de "Prueba" a producción). Google pide una página principal y una de política de privacidad. Mientras tanto, solo entran los correos de la lista de prueba (máximo 100).
 
 ## 9. Riesgos
-- **Google en iPhone con la app instalada:** el inicio de sesión sale de la app y regresa. Hay que probarlo en un iPhone real. Plan B: código de acceso por correo, que Supabase también soporta.
+- **Google en iPhone con la app instalada:** ✅ probado el 07/11/2026. El inicio de sesión sale a Google y regresa a la app instalada sin problema. Se queda como plan B el código de acceso por correo, que Supabase también soporta.
+- **Boleto de Google:** si pasan varios minutos entre tocar "Entrar con Google" y terminar, el boleto vence y hay que volver a empezar. Si eso pasa, Supabase regresa a la persona a `/prueba/`.
 - **Métricas sin señal:** se guardan en el teléfono y se mandan al recuperar conexión.
 - **Cambio de nombre del repositorio:** cambia el enlace de la app. Hay que hacer QR nuevo y reinstalar.
