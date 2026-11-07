@@ -1,7 +1,7 @@
 // Lógica de estudio: tarjetas con repetición espaciada (Leitner), examen y guía.
-(() => {
+// auth.js la arranca con el menú del restaurante (M) y la conexión a su cuenta (R; null en modo demostración).
+window.startApp = (M, R) => {
   "use strict";
-  const M = window.MENU;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -36,44 +36,32 @@
   CARDS.sort((a, b) => a.st - b.st);
   const BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
 
-  /* ── Progreso: este dispositivo + cuenta de Claude si está disponible ── */
-  const KEY = "come-camila-estudio-v1";
+  /* ── Progreso: este teléfono + la cuenta del restaurante si hay sesión ── */
+  const KEY = "come-camila-estudio-v1" + (R ? "-" + R.userId : "");
   const fresh = () => ({ p: {}, log: {}, ex: [], newPer: 10, upd: 0 });
   let S = fresh();
   try { const r = JSON.parse(localStorage.getItem(KEY) || "null"); if (r && r.p) S = Object.assign(fresh(), r); } catch (e) { /* sin almacenamiento */ }
-  let remote = null, pushTimer = 0, pushing = Promise.resolve();
+  let pushTimer = 0;
 
   function save() {
     S.upd = Date.now();
     try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* sin almacenamiento */ }
-    if (!remote) return;
+    if (!R) return;
     clearTimeout(pushTimer);
     pushTimer = setTimeout(() => {
-      const body = JSON.parse(JSON.stringify(S));
-      pushing = pushing.then(() => remote.set(body)).catch(() => {});
-    }, 1200);
+      R.saveProgress(JSON.parse(JSON.stringify(S)), { vistas: CARDS.filter(seen).length, dominadas: CARDS.filter(mastered).length, total: CARDS.length });
+    }, 1500);
   }
 
+  // Con sesión: si la cuenta tiene un progreso más nuevo (otro teléfono), lo usa; si no, sube el de aquí.
   async function connect() {
-    try {
-      if (!window.claude || !window.claude.use) return;
-      const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
-      if (!db || !user) return;
-      const uid = await user.id();
-      if (!uid) return;
-      const ref = db.doc("data/users/" + uid + "/progreso");
-      const snap = await ref.get();
-      remote = ref;
-      if (snap.exists) {
-        const r = JSON.parse(JSON.stringify(snap.data()));
-        if (r.p && (r.upd || 0) > (S.upd || 0)) {
-          S = Object.assign(fresh(), r);
-          try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* sin almacenamiento */ }
-          if (!session && !exam) render(current);
-        } else if ((S.upd || 0) > (r.upd || 0)) save();
-      } else if (S.upd) save();
-      $("#sync").textContent = "Tu progreso se guarda en tu cuenta de Claude y sigue contigo en cualquier dispositivo.";
-    } catch (e) { remote = null; }
+    if (!R) return;
+    const r = await R.loadProgress();
+    if (r && r.p && (r.upd || 0) > (S.upd || 0)) {
+      S = Object.assign(fresh(), r);
+      try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* sin almacenamiento */ }
+      if (!session && !exam) render(current);
+    } else if ((S.upd || 0) > ((r && r.upd) || 0)) save();
   }
 
   /* ── Repetición espaciada ── */
@@ -242,6 +230,7 @@
     }
     p.r++; p.last = t; S.p[c.id] = p;
     const L = dayLog(t); L.r++; if (isNew) L.n++;
+    if (R) R.card();
     save();
     s.i++; revealed = false;
     renderCard();
@@ -379,6 +368,7 @@
       S.ex.push({ d: today(), s: x.score, n: x.qs.length, t: x.title });
       S.ex = S.ex.slice(-30);
       save();
+      if (R) R.saveExam(x.score, x.qs.length, x.title);
       exam = null;
       el.innerHTML = `
         <section class="panel">
@@ -530,19 +520,95 @@
       <section class="panel">
         <h3>Progreso</h3>
         <p class="note" id="sync2">${esc($("#sync").textContent)}</p>
+        ${R ? `<p class="note">Sesión: <b>${esc(R.email)}</b> · ${esc(R.org)}</p><button class="btn ghost" id="logout">Cerrar sesión</button>` : ""}
         ${confirmReset
           ? '<p class="warn">Esto borra todas tus tarjetas y exámenes. No se puede deshacer.</p><div class="row"><button class="btn danger" id="resetyes">Sí, borrar todo</button><button class="btn" id="resetno">Cancelar</button></div>'
           : '<button class="btn ghost" id="reset">Borrar mi progreso</button>'}
       </section>`;
   }
 
+  /* ── Equipo (solo administrador): frecuencia, tiempo y resultados de cada persona ── */
+  let team = null, teamErr = "", teamMsg = "", teamLoading = false;
+  async function loadTeam() {
+    if (teamLoading) return;
+    teamLoading = true;
+    try { team = await R.team(); teamErr = ""; } catch (e) { team = []; teamErr = e.message; }
+    teamLoading = false;
+    if (current === "equipo") renderEquipo();
+  }
+  function renderEquipo() {
+    const el = $("#v-equipo");
+    if (!team) { el.innerHTML = '<section class="panel"><p class="lead">Cargando a tu equipo…</p></section>'; loadTeam(); return; }
+    const active = team.filter(r => r.activo).length;
+    el.innerHTML = `
+      <section class="panel">
+        <p class="eyebrow">${esc(R.org)} · ${active} de ${R.limite ?? "?"} usuarios activos</p>
+        <h2 class="h-display">Equipo</h2>
+        ${teamErr ? `<p class="warn">${esc(teamErr)}</p>` : ""}
+        ${teamMsg ? `<p class="note" aria-live="polite">${esc(teamMsg)}</p>` : ""}
+        <div class="table-wrap"><table class="team">
+          <thead><tr><th>Persona</th><th>Último acceso</th><th>Días activos<br>7 / 30</th><th>Minutos</th><th>Dominadas</th><th>Último examen</th><th><span class="sr">Acción</span></th></tr></thead>
+          <tbody>${team.map(r => `<tr class="${r.activo ? "" : "off"}">
+            <td><b>${esc(r.nombre || r.correo)}</b><span class="muted">${esc([r.nombre ? r.correo : "", r.rol === "admin" ? "admin" : "", r.activo ? "" : "inactivo"].filter(Boolean).join(" · ")) || "&nbsp;"}</span></td>
+            <td>${r.ultimo_acceso ? fmt(r.ultimo_acceso) : "Nunca"}</td>
+            <td>${r.dias_7} / ${r.dias_30}</td>
+            <td>${r.minutos}</td>
+            <td>${r.total ? Math.round((r.dominadas / r.total) * 100) + "%" : "—"}</td>
+            <td>${esc(r.ultimo_examen || "—")}</td>
+            <td><button class="chip" data-toggle="${esc(r.miembro_id)}" data-on="${r.activo ? 1 : 0}">${r.activo ? "Desactivar" : "Activar"}</button></td>
+          </tr>`).join("")}</tbody>
+        </table></div>
+        <div class="row"><button class="btn" id="csv">Descargar CSV</button><button class="btn ghost" id="teamreload">Actualizar</button></div>
+      </section>
+      <section class="panel">
+        <h3>Dar de alta</h3>
+        <form id="addform" class="field">
+          <label for="newmail">Correo de Google de la persona</label>
+          <input id="newmail" type="email" required placeholder="nombre@gmail.com" autocomplete="off">
+          <label for="newrol">Rol</label>
+          <select id="newrol"><option value="personal">Personal</option><option value="admin">Administrador</option></select>
+          <button class="btn primary" type="submit">Dar de alta</button>
+        </form>
+        <p class="note">Cada persona activa ocupa un lugar de la licencia. Desactiva a quien ya no trabaje aquí para liberar su lugar; su historial se conserva.</p>
+      </section>`;
+  }
+  async function toggleMember(id, on) {
+    teamMsg = "";
+    try { await R.setActive(id, !on); } catch (e) { teamMsg = e.message; }
+    team = null;
+    renderEquipo();
+  }
+  async function addMember() {
+    const mail = $("#newmail").value.trim().toLowerCase(), rol = $("#newrol").value;
+    if (!mail) return;
+    try { await R.addMember(mail, rol); teamMsg = `Listo: ${mail} ya puede entrar con su cuenta de Google.`; }
+    catch (e) { teamMsg = e.message; }
+    team = null;
+    renderEquipo();
+  }
+  function downloadCSV() {
+    const head = ["Correo", "Nombre", "Rol", "Activo", "Último acceso", "Días activos (7)", "Días activos (30)", "Minutos", "Tarjetas repasadas", "Vistas", "Dominadas", "Total de tarjetas", "Exámenes", "Último examen"];
+    const cell = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const rows = (team || []).map(r => [r.correo, r.nombre, r.rol, r.activo ? "sí" : "no", r.ultimo_acceso, r.dias_7, r.dias_30, r.minutos,
+      r.tarjetas, r.vistas, r.dominadas, r.total, r.num_examenes, (r.ultimo_examen || "").replace("/", " de ")]);
+    const csv = "﻿" + [head, ...rows].map(r => r.map(cell).join(",")).join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = `equipo-${today()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
   /* ── Navegación ── */
-  const VIEWS = ["hoy", "examen", "guia", "plan"];
+  const VIEWS = ["hoy", "examen", "guia", "plan"].concat(R && R.rol === "admin" ? ["equipo"] : []);
   let current = "hoy";
   function render(v) {
     if (v === "hoy") renderHoy();
     else if (v === "examen") renderExam();
     else if (v === "guia") renderGuia();
+    else if (v === "equipo") renderEquipo();
     else renderPlan();
   }
   function go(v) {
@@ -565,6 +631,7 @@
     if (b.dataset.go) return go(b.dataset.go);
     if (b.dataset.g) return grade(+b.dataset.g);
     if (b.dataset.k) return choose(+b.dataset.k);
+    if (b.dataset.toggle) return toggleMember(b.dataset.toggle, b.dataset.on === "1");
     if (b.dataset.jump) {
       const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
       return document.getElementById(b.dataset.jump)?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
@@ -581,7 +648,13 @@
       case "reset": confirmReset = true; return renderPlan();
       case "resetno": confirmReset = false; return renderPlan();
       case "resetyes": S = fresh(); confirmReset = false; save(); return renderPlan();
+      case "logout": return R.signOut();
+      case "csv": return downloadCSV();
+      case "teamreload": team = null; teamMsg = ""; return renderEquipo();
     }
+  });
+  document.addEventListener("submit", e => {
+    if (e.target.id === "addform") { e.preventDefault(); addMember(); }
   });
   document.addEventListener("change", e => {
     if (e.target.id === "scope") examScope = e.target.value;
@@ -600,9 +673,12 @@
     }
   });
 
+  $(".tabs").hidden = false;
+  if (VIEWS.includes("equipo")) $('[data-tab="equipo"]').hidden = false;
   let start = location.hash.slice(1);
   if (!VIEWS.includes(start)) { try { start = localStorage.getItem(KEY + "-tab") || "hoy"; } catch (e) { start = "hoy"; } }
+  if (!VIEWS.includes(start)) start = "hoy";
   go(start);
   connect();
   window.__estudio = { CARDS, BY_ID, makeQ }; // para revisar desde la consola
-})();
+};

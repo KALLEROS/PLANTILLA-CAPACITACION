@@ -1,7 +1,7 @@
 // Guarda la app en el teléfono para que abra aunque no haya señal en el restaurante.
 // Primero intenta la red (para recibir actualizaciones) y si falla usa la copia guardada.
-const CACHE = "estudio-camila-v2";
-const FILES = ["./", "./index.html", "./data.js", "./app.js", "./pwa.js", "./manifest.webmanifest",
+const CACHE = "capacitacion-v3";
+const FILES = ["./", "./index.html", "./data.js", "./app.js", "./config.js", "./auth.js", "./pwa.js", "./manifest.webmanifest",
                "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {

@@ -65,7 +65,7 @@ button, select, input { font: inherit; color: inherit; }
 .top-in { padding-block: 12px 0; display: grid; gap: 10px; }
 .brand-k { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .brand h1 { font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
-.tabs { display: grid; grid-template-columns: repeat(4, 1fr); }
+.tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
 .tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 4px 9px; font-weight: 700; color: var(--muted); cursor: pointer; }
 .tabs button[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
 
@@ -146,7 +146,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; padding: 1px 5px; border-radi
 /* Examen */
 .field { display: grid; gap: 6px; }
 .field label { font-weight: 700; }
-select, input[type="search"] { width: 100%; min-height: 46px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); }
+select, input[type="search"], input[type="email"] { width: 100%; min-height: 46px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); }
 .quiz-q { font-family: var(--f-display); font-weight: 600; font-size: 1.4rem; line-height: 1.2; }
 .quiz-sub { font-size: 1.05rem; padding: 12px 14px; border-radius: 8px; background: var(--bg); border-left: 4px solid var(--accent); }
 .opts { display: grid; gap: 8px; }
@@ -212,6 +212,23 @@ select, input[type="search"] { width: 100%; min-height: 46px; padding: 10px 12px
 
 .foot { padding-block: 24px calc(32px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; font-size: .85rem; color: var(--muted); }
 
+/* Inicio de sesión */
+.gate-card { padding-block: 28px; }
+.btn.google { background: var(--surface); color: var(--ink); border-color: var(--line); gap: 12px; }
+.btn.google:disabled { opacity: .6; cursor: progress; }
+
+/* Equipo */
+.table-wrap { overflow-x: auto; margin-inline: -20px; padding-inline: 20px; }
+.team { width: 100%; min-width: 620px; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.team th { text-align: left; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 6px 8px; border-bottom: 2px solid var(--line); vertical-align: bottom; }
+.team td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.team td:first-child { min-width: 180px; }
+.team td b { display: block; }
+.team td .muted { font-size: .82rem; }
+.team tr.off td { color: var(--muted); }
+#addform { gap: 8px; }
+#addform .btn { justify-self: start; margin-top: 4px; }
+
 /* Instalar como app */
 .install { grid-template-columns: auto 1fr auto auto; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 16px; }
 .install .ico { width: 44px; height: 44px; border-radius: 10px; }
@@ -253,11 +270,12 @@ select, input[type="search"] { width: 100%; min-height: 46px; padding: 10px 12px
       <p class="brand-k">Come Camila · Capacitación</p>
       <h1>De runner a mesero</h1>
     </div>
-    <nav class="tabs" aria-label="Secciones">
+    <nav class="tabs" aria-label="Secciones" hidden>
       <button data-tab="hoy" aria-current="page">Hoy</button>
       <button data-tab="examen">Examen</button>
       <button data-tab="guia">Guía</button>
       <button data-tab="plan">Plan</button>
+      <button data-tab="equipo" hidden>Equipo</button>
     </nav>
   </div>
 </header>
@@ -273,6 +291,8 @@ select, input[type="search"] { width: 100%; min-height: 46px; padding: 10px 12px
   <div id="v-examen" class="view" hidden></div>
   <div id="v-guia" class="view" hidden></div>
   <div id="v-plan" class="view" hidden></div>
+  <div id="v-equipo" class="view" hidden></div>
+  <div id="gate" class="view" hidden></div>
   <noscript><p class="panel">Esta guía necesita JavaScript activado.</p></noscript>
 </main>
 
@@ -305,6 +325,9 @@ select, input[type="search"] { width: 100%; min-height: 46px; padding: 10px 12px
 </script>
 <script src="data.js"></script>
 <script src="app.js"></script>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="auth.js"></script>
 <script src="pwa.js"></script>
 </body>
 </html>
