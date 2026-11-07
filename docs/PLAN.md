@@ -41,7 +41,7 @@ Por persona, visibles para el administrador y exportables a CSV:
 1. ✅ Crear un proyecto en supabase.com y pasar la **Project URL** y la **llave publicable**. Esa llave es pública por diseño; la protección la dan las reglas RLS.
 2. ✅ Crear el cliente OAuth de Google (Google Cloud Console) y pegar el Client ID y el secreto en Supabase → Authentication → Providers → Google. El secreto no se comparte con nadie más.
 3. ✅ Correr `supabase/schema.sql` en el SQL Editor y dar de alta la primera organización y su administrador.
-4. ⬜ Publicar la app de Google (pasarla de "Prueba" a producción). Google pide una página principal y una de política de privacidad. Mientras tanto, solo entran los correos de la lista de prueba (máximo 100).
+4. ✅ Publicar la app de Google (07/11/2026). Ya está en producción: entra cualquier cuenta de Google que el administrador haya dado de alta. Página principal: la raíz; aviso de privacidad: `privacidad.html`.
 
 ## 9. Riesgos
 - **Google en iPhone con la app instalada:** ✅ probado el 07/11/2026. El inicio de sesión sale a Google y regresa a la app instalada sin problema. Se queda como plan B el código de acceso por correo, que Supabase también soporta.
