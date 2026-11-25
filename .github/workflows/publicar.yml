@@ -29,24 +29,24 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Versión principal (main) en la raíz
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: main
           path: sitio
       - name: Versión de prueba (inicio-sesion) en /prueba/
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: inicio-sesion
           path: sitio/prueba
       - name: Versión sin marca (sin-marca) en /sin-marca/
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: sin-marca
           path: sitio/sin-marca
       - name: Quitar lo que no es parte de la página
         run: rm -rf sitio/.git sitio/.github sitio/prueba/.git sitio/prueba/.github sitio/sin-marca/.git sitio/sin-marca/.github
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: sitio
       - id: deploy
