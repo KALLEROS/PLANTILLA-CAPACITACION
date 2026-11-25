@@ -5,7 +5,7 @@ Las decisiones de negocio (cliente, empresa, precios) viven en Obsidian, no aqu�
 ## 1. Producto
 App web instalable que convierte el manual de capacitación de un restaurante en estudio diario: tarjetas con repetición espaciada, examen, guía con buscador y plan semanal.
 
-- `main`: primer borrador, en línea y sin inicio de sesión (contenido de ejemplo: Come Camila).
+- `main`: primer borrador, en línea y sin inicio de sesión.
 - `inicio-sesion`: rama de trabajo para cuentas, métricas y licencias.
 
 ## 2. Cuentas

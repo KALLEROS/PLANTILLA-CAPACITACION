@@ -1,4 +1,4 @@
-// Menú Come Camila — transcrito del manual de capacitación (Etapas 1–10).
+// Menú de muestra — restaurante casual (entradas, ensaladas, paninis, pizzas, pastas, coctelería y vinos). Etapas 1–10.
 // Cada platillo: ing = ingredientes, comp = complementos / aderezos que salen con él,
 // gar = garnitura, esc = escarcha. Si algo cambia en el restaurante, se corrige aquí.
 
@@ -21,7 +21,7 @@ window.MENU = {
     { id: "alitas", st: 1, cat: "Entradas", name: "Alitas Peri Peri",
       ing: ["alitas 300 g", "salsa peri peri", "vinagreta oriental", "spring mix", "rábano", "serrano", "mix ajonjolí"],
       comp: ["ranch", "2 toallitas húmedas"] },
-    { id: "betabel", st: 1, cat: "Entradas", name: "Betabel Camila",
+    { id: "betabel", st: 1, cat: "Entradas", name: "Betabel de la Casa",
       ing: ["betabel 1 pz", "queso de cabra batido", "pistacho horneado", "arúgula", "vinagreta balsámica", "reducción balsámica"],
       comp: ["pinzas"] },
     { id: "carpaccio", st: 1, cat: "Entradas", name: "Carpaccio de res",
@@ -44,7 +44,7 @@ window.MENU = {
       ing: ["matcha", "limonada", "concentrado de fresa"] },
     { id: "delhi", st: 1, cat: "Bebidas", name: "Delhi Monada",
       ing: ["cúrcuma", "albahaca", "jengibre", "limonada"] },
-    { id: "limocamila", st: 1, cat: "Bebidas", name: "Limonada Camila",
+    { id: "limocasa", st: 1, cat: "Bebidas", name: "Limonada de la Casa",
       ing: ["limonada natural", "3 bolitas de nieve de limón"], gar: "rodaja de limón" },
     { id: "limochina", st: 1, cat: "Bebidas", name: "Limochina",
       ing: ["limonada natural", "concentrado de pepino con jengibre"], gar: "laja de pepino" },
@@ -62,7 +62,7 @@ window.MENU = {
     { id: "rocktempura", st: 2, cat: "Entradas", name: "Rock Tempura",
       ing: ["camarón roca", "mix tempura", "maizena", "spicy curry", "vinagreta oriental", "spring mix", "chile toreado serrano", "mix ajonjolí", "cebollín gourmet"],
       comp: ["soya-limón", "ranch", "palillos chinos"] },
-    { id: "tostadamua", st: 2, cat: "Entradas", name: "Tostada Mua",
+    { id: "tostadaatun", st: 2, cat: "Entradas", name: "Tostada de Atún",
       ing: ["láminas de atún", "tostada plana", "mayo chipotle", "aguacate", "poro tostado", "tajín"],
       comp: ["soya-limón"] },
     { id: "atunpoke", st: 2, cat: "Entradas", name: "Atún Poke", alias: "Poke",
@@ -83,7 +83,7 @@ window.MENU = {
 
     { id: "passiontea", st: 2, cat: "Bebidas", name: "Passion Ice Tea",
       ing: ["jarabe passion", "té passion"] },
-    { id: "clamato", st: 2, cat: "Bebidas", name: "Clamato Camila",
+    { id: "clamato", st: 2, cat: "Bebidas", name: "Clamato de la Casa",
       ing: ["limón", "mix clamato (sangrita, kermato, sales de clamato y petróleo)"],
       gar: "espada de bambú con laja de pepino, aceituna y gajo de lima" },
     { id: "sangriaclasica", st: 2, cat: "Bebidas", name: "Sangría Clásica",
@@ -92,14 +92,14 @@ window.MENU = {
       ing: ["mix shirley temple", "ginger ale", "zumo de limón", "1 lima", "2 cerezas"] },
     { id: "fresamaracuya", st: 2, cat: "Bebidas", name: "Fresa Maracuyá",
       ing: ["maracuyá", "puré de fresa"] },
-    { id: "suero", st: 2, cat: "Bebidas", name: "Suero Camila",
+    { id: "suero", st: 2, cat: "Bebidas", name: "Suero de la Casa",
       ing: ["3 limas en conserva", "jugo de las limas", "sherbet de lima", "agua mineral"], esc: "sal" },
 
     // ───────── ETAPA 3 ─────────
     { id: "california", st: 3, cat: "Ensaladas", name: "Ensalada California",
       ing: ["lechuga spring mix", "col morada", "aderezo ranch chipotle", "aguacate", "pepino mini", "tomate cherry", "tocino crispy", "queso cheddar rallado", "pollo panko en cubos"] },
-    { id: "ensCamila", st: 3, cat: "Ensaladas", name: "Ensalada Camila",
-      ing: ["mix de lechuga (romana y bola)", "spring mix", "jamón serrano", "fresas", "almendras caramelizadas", "vinagreta Camila"] },
+    { id: "enscasa", st: 3, cat: "Ensaladas", name: "Ensalada de la Casa",
+      ing: ["mix de lechuga (romana y bola)", "spring mix", "jamón serrano", "fresas", "almendras caramelizadas", "vinagreta de la casa"] },
     { id: "cesar", st: 3, cat: "Ensaladas", name: "Ensalada César",
       ing: ["corazón de lechuga", "pollo grill", "parmesano rallado", "¼ de lima", "crutones", "aderezo césar"] },
     { id: "cranberry", st: 3, cat: "Ensaladas", name: "Ensalada Cranberry",
@@ -144,13 +144,13 @@ window.MENU = {
       ing: ["pan brioche", "queso havarti", "queso boursin", "mix de quesos (mozzarella, gouda y monterrey)", "mayo pesto"] },
 
     { id: "triopanini", st: 4, cat: "Tríos", name: "Trío Panini",
-      ing: ["½ panini clásico", "+ ensalada (Camila, Mexicana, Cranberry o César) o sopa (tomate o poblano)", "+ bebida"] },
-    { id: "triomua", st: 4, cat: "Tríos", name: "Trío MUA",
-      ing: ["tostada de atún", "+ ½ panini Pollo Pesto o ensalada Camila", "+ bebida"] },
+      ing: ["½ panini clásico", "+ ensalada (de la Casa, Mexicana, Cranberry o César) o sopa (tomate o poblano)", "+ bebida"] },
+    { id: "triotostada", st: 4, cat: "Tríos", name: "Trío Tostada",
+      ing: ["tostada de atún", "+ ½ panini Pollo Pesto o ensalada de la Casa", "+ bebida"] },
     { id: "triolasana", st: 4, cat: "Tríos", name: "Trío Lasaña",
-      ing: ["½ porción de lasaña", "+ ½ ensalada Camila", "+ 1 pz pan focaccia", "+ bebida"] },
+      ing: ["½ porción de lasaña", "+ ½ ensalada de la Casa", "+ 1 pz pan focaccia", "+ bebida"] },
     { id: "trioensalada", st: 4, cat: "Tríos", name: "Trío Ensalada",
-      ing: ["½ ensalada (Mexicana, Cranberry, César o Camila)", "+ ½ sopa", "+ bebida"] },
+      ing: ["½ ensalada (Mexicana, Cranberry, César o de la Casa)", "+ ½ sopa", "+ bebida"] },
 
     { id: "clericot", st: 4, cat: "Cocteles", name: "Clericot",
       ing: ["mix clericot", "manzana roja y verde", "blueberries", "Strongbow Gold", "jugo de limón", "vino de bateo"] },
@@ -211,7 +211,7 @@ window.MENU = {
     { id: "wok", st: 6, cat: "Especialidades", name: "Wok Teriyaki",
       ing: ["arroz blanco", "quinoa", "brócoli", "ejote francés", "espárragos", "cebolla caramelizada", "pollo", "salsa teriyaki", "wok aromatic", "mix ajonjolí", "aguacate"],
       comp: ["sriracha agridulce"] },
-    { id: "portobello", st: 6, cat: "Especialidades", name: "Portobello Camila",
+    { id: "portobello", st: 6, cat: "Especialidades", name: "Portobello de la Casa",
       ing: ["germinado de alfalfa", "tomate deshidratado", "hongo portobello", "alcachofa", "espinaca", "queso de cabra", "queso mozzarella", "reducción balsámica"] },
 
     { id: "pinamezcal", st: 6, cat: "Mixología", name: "Piña Mezcal",
@@ -241,7 +241,7 @@ window.MENU = {
 
     { id: "applecrisp", st: 7, cat: "Postres", name: "Apple Crisp",
       ing: ["manzana horneada con canela", "crumble de galleta", "nieve de vainilla"] },
-    { id: "brownie", st: 7, cat: "Postres", name: "Brownie Camila",
+    { id: "brownie", st: 7, cat: "Postres", name: "Brownie de la Casa",
       ing: ["brownie de chocolate", "caramelo", "nieve de vainilla"] },
     { id: "cheesecake", st: 7, cat: "Postres", name: "Cheesecake de Pistacho",
       ing: ["cheesecake de pistacho", "cubierta de pistache", "blueberries", "salsa de berries"],
@@ -300,7 +300,7 @@ window.MENU = {
       origin: "Italia", grape: "Glera", notes: "manzana verde, pera, durazno blanco, cítricos; fresco y ligero" }
   ],
 
-  // Códigos de marcaje en comanda (Etapa final)
+  // Códigos de marcaje en comanda (etapa final)
   codes: [
     { c: "18", m: "Platillo de niño" },
     { c: "86", m: "Sin stock" },
@@ -308,12 +308,12 @@ window.MENU = {
     { c: "100", m: "Sobre stock" }
   ],
 
-  // Reglas y notas del manual que se preguntan en servicio
+  // Reglas y notas que se preguntan en servicio
   rules: [
     { id: "r-receta", st: 3, q: "¿Se puede modificar una receta?", a: "No. Ninguna receta se puede modificar." },
     { id: "r-proteina", st: 3, q: "¿Qué proteína extra se puede agregar a cualquier ensalada?", a: "Pollo (grill o panko), salmón o camarones." },
-    { id: "r-pinzas", st: 3, q: "¿Qué complemento llevan las ensaladas y el Betabel Camila?", a: "Pinzas." },
-    { id: "r-triobebida", st: 4, q: "¿Qué bebidas incluyen los tríos?", a: "Todos los tríos incluyen bebida: limofresa, limochina, jamaica, limonada o jamaicamila." },
+    { id: "r-pinzas", st: 3, q: "¿Qué complemento llevan las ensaladas y el Betabel de la Casa?", a: "Pinzas." },
+    { id: "r-triobebida", st: 4, q: "¿Qué bebidas incluyen los tríos?", a: "Todos los tríos incluyen bebida: limofresa, limochina, jamaica, limonada o jamaica de la casa." },
     { id: "r-sopas", st: 4, q: "¿Qué sopas se manejan?", a: "Solo dos: tomate y poblano." },
     { id: "r-panisopa", st: 4, q: "¿Qué se le puede agregar a un panini completo?", a: "Una sopita de poblano o tomate, por un menor costo." },
     { id: "r-pastas", st: 5, q: "¿Qué complementos llevan las pastas?", a: "Todas: 1 pan focaccia. Mac & Cheese y Spicy Rigatoni además cuchara. Lasaña además ensalada side." },
@@ -323,19 +323,19 @@ window.MENU = {
     { id: "r-final", st: 10, q: "¿Cómo es la etapa final de la capacitación?", a: "Auxiliar de mesero: marcaje de comanda (tiempos y códigos), siendo sombra de un mesero." }
   ],
 
-  // Patrones que ayudan a memorizar en bloque (todos salen del manual)
+  // Patrones que ayudan a memorizar en bloque (para memorizar en bloque)
   hints: {
     "Entradas": [
-      "Soya-limón sale con todo lo de atún y mariscos: Hand Roll, Crispy Tuna, Rollitos, Rock Tempura, Tostada Mua, Poke, Tuna Nachos, Azulitas.",
+      "Soya-limón sale con todo lo de atún y mariscos: Hand Roll, Crispy Tuna, Rollitos, Rock Tempura, Tostada de Atún, Poke, Tuna Nachos, Azulitas.",
       "Alioli serrano + 4 pitas = las dos de láminas: Carpaccio y Sashimi. El Sashimi además lleva palillos.",
       "Hummus = 5 pitas + cuchara. Ranch: Alitas y Rock Tempura.",
       "Vinagreta oriental: Alitas, Rock Tempura, Azulitas, Coliflor Spicy (y Salmón Quinoa).",
       "Tuna Nachos aparece como «Tuna mango» en la tabla de aderezos."
     ],
     "Ensaladas": [
-      "Mix de lechuga (romana y bola) + spring mix: Camila, Cranberry, Mexicana, Roma.",
+      "Mix de lechuga (romana y bola) + spring mix: de la Casa, Cranberry, Mexicana, Roma.",
       "Corazón de lechuga + crutones: César y Side.",
-      "Almendras caramelizadas: Camila y Cranberry. Tomate deshidratado: Mexicana y Roma."
+      "Almendras caramelizadas: de la Casa y Cranberry. Tomate deshidratado: Mexicana y Roma."
     ],
     "Paninis clásicos": [
       "Todos los paninis clásicos van en pan ciabatta.",

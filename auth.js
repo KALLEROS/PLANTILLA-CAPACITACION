@@ -10,9 +10,41 @@
   const G_ICON = '<svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.7c4.3-4 6.9-9.9 6.9-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
 
   if (!C.supabaseUrl || !C.supabaseAnonKey) {
-    $("#sync").textContent = "Modo demostración: el progreso se guarda solo en este teléfono.";
-    window.startApp(window.MENU, null);
+    $("#sync").textContent = "Versión de demostración: el progreso se guarda solo en este teléfono.";
+    window.startApp(window.MENU, demoRemote());
     return;
+  }
+
+  // Demostración sin cuenta: la persona entra como gerente y el panel Equipo muestra personas de ejemplo.
+  function demoRemote() {
+    const ago = (d, h = 0) => { const x = new Date(Date.now() - (d * 24 + h) * 3600e3); // fecha local AAAA-MM-DD, como la base
+      return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`; };
+    const total = (window.MENU.items || []).length + (window.MENU.rules || []).length;
+    const p = (id, nombre, correo, rol, activo, acc, d7, d30, min, tar, vis, dom, nex, ult) =>
+      ({ miembro_id: id, nombre, correo, rol, activo, ultimo_acceso: acc, dias_7: d7, dias_30: d30, minutos: min,
+         tarjetas: tar, vistas: vis, dominadas: dom, total, num_examenes: nex, ultimo_examen: ult });
+    let team = [
+      p("1", "Gerente", "gerente@ejemplo.com", "admin", true, ago(0, 1), 5, 18, 142, 610, total, Math.round(total * 0.82), 6, "9/10"),
+      p("2", "Ana Martínez", "ana.martinez@ejemplo.com", "personal", true, ago(0, 3), 6, 22, 186, 840, total, Math.round(total * 0.74), 5, "8/10"),
+      p("3", "Luis Hernández", "luis.hernandez@ejemplo.com", "personal", true, ago(1), 4, 15, 97, 455, Math.round(total * 0.8), Math.round(total * 0.51), 3, "7/10"),
+      p("4", "Sofía Ramírez", "sofia.ramirez@ejemplo.com", "personal", true, ago(2), 3, 11, 64, 300, Math.round(total * 0.6), Math.round(total * 0.33), 2, "6/10"),
+      p("5", "Diego Torres", "diego.torres@ejemplo.com", "personal", true, ago(6), 1, 6, 21, 95, Math.round(total * 0.3), Math.round(total * 0.09), 1, "5/10"),
+      p("6", "Carla Gómez", "carla.gomez@ejemplo.com", "personal", false, ago(24), 0, 0, 38, 170, Math.round(total * 0.45), Math.round(total * 0.2), 1, "6/10")
+    ];
+    let next = 7;
+    return {
+      demo: true, userId: "demo", email: "gerente@ejemplo.com", org: "Restaurante Demo", rol: "admin", limite: 10,
+      async loadProgress() { return null; },
+      saveProgress() {}, card() {}, saveExam() {},
+      async team() { return team.map(r => ({ ...r })); },
+      async addMember(correo, rol) {
+        if (team.some(r => r.correo === correo)) throw new Error("Ese correo ya está dado de alta.");
+        if (team.filter(r => r.activo).length >= 10) throw new Error("Ya llegaste al límite de usuarios activos de tu licencia.");
+        team.push(p(String(next++), "", correo, rol, true, null, 0, 0, 0, 0, 0, 0, 0, null));
+      },
+      async setActive(id, activo) { team = team.map(r => (r.miembro_id === id ? { ...r, activo } : r)); },
+      async signOut() { location.reload(); }
+    };
   }
 
   const readCache = () => { try { return JSON.parse(localStorage.getItem(CACHE_KEY) || "null"); } catch (e) { return null; } };

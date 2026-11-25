@@ -37,7 +37,7 @@ window.startApp = (M, R) => {
   const BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
 
   /* ── Progreso: este teléfono + la cuenta del restaurante si hay sesión ── */
-  const KEY = "come-camila-estudio-v1" + (R ? "-" + R.userId : "");
+  const KEY = "plantilla-demo-v1" + (R ? "-" + R.userId : "");
   const fresh = () => ({ p: {}, log: {}, ex: [], newPer: 10, upd: 0 });
   let S = fresh();
   try { const r = JSON.parse(localStorage.getItem(KEY) || "null"); if (r && r.p) S = Object.assign(fresh(), r); } catch (e) { /* sin almacenamiento */ }
@@ -520,7 +520,7 @@ window.startApp = (M, R) => {
       <section class="panel">
         <h3>Progreso</h3>
         <p class="note" id="sync2">${esc($("#sync").textContent)}</p>
-        ${R ? `<p class="note">Sesión: <b>${esc(R.email)}</b> · ${esc(R.org)}</p><button class="btn ghost" id="logout">Cerrar sesión</button>` : ""}
+        ${R && !R.demo ? `<p class="note">Sesión: <b>${esc(R.email)}</b> · ${esc(R.org)}</p><button class="btn ghost" id="logout">Cerrar sesión</button>` : ""}
         ${confirmReset
           ? '<p class="warn">Esto borra todas tus tarjetas y exámenes. No se puede deshacer.</p><div class="row"><button class="btn danger" id="resetyes">Sí, borrar todo</button><button class="btn" id="resetno">Cancelar</button></div>'
           : '<button class="btn ghost" id="reset">Borrar mi progreso</button>'}

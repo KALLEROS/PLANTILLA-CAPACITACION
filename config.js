@@ -1,6 +1,6 @@
-// Datos del proyecto de Supabase (Settings → API). Vacíos = modo demostración con el menú de data.js.
-// La "anon public key" es pública por diseño: lo que protege los datos son las reglas de supabase/schema.sql.
+// Versión de demostración: sin Supabase. La app abre directo con el menú de muestra de data.js
+// y un panel Equipo con personas de ejemplo.
 window.CONFIG = {
-  supabaseUrl: "https://hppbxmizrigcrytqqizz.supabase.co",
-  supabaseAnonKey: "sb_publishable_1SROMhDpK1gLIO59MijrYA__ydvyNqN"
+  supabaseUrl: "",
+  supabaseAnonKey: ""
 };
