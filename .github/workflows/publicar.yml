@@ -1,7 +1,10 @@
-# Publica la página con las dos versiones juntas cada vez que se suben cambios:
+# Publica la página con las tres versiones juntas cada vez que se suben cambios:
 #   /         → rama main (versión principal)
 #   /prueba/  → rama inicio-sesion (versión con inicio de sesión, para probar)
-# Este archivo debe ser igual en las dos ramas.
+#   /sin-marca/ → rama sin-marca (demostración sin marca ni inicio de sesión)
+# La rama sin-marca no dispara la publicación (GitHub Pages solo acepta main e inicio-sesion):
+# se publica al subir algo a esas ramas o al correr esta acción a mano.
+# Este archivo debe ser igual en las tres ramas.
 name: Publicar app
 
 on:
@@ -35,8 +38,13 @@ jobs:
         with:
           ref: inicio-sesion
           path: sitio/prueba
+      - name: Versión sin marca (sin-marca) en /sin-marca/
+        uses: actions/checkout@v4
+        with:
+          ref: sin-marca
+          path: sitio/sin-marca
       - name: Quitar lo que no es parte de la página
-        run: rm -rf sitio/.git sitio/.github sitio/prueba/.git sitio/prueba/.github
+        run: rm -rf sitio/.git sitio/.github sitio/prueba/.git sitio/prueba/.github sitio/sin-marca/.git sitio/sin-marca/.github
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
