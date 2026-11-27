@@ -14,7 +14,7 @@
   const standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
   if (standalone) return;
 
-  const HIDE = "plantilla-demo-instalar-oculto-hasta";
+  const HIDE = "sdd-instalar-oculto-hasta";
   try { if (Date.now() < +(localStorage.getItem(HIDE) || 0)) return; } catch (e) { /* sin almacenamiento */ }
 
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);

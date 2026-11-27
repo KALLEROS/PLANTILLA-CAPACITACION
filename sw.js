@@ -1,6 +1,7 @@
 // Guarda la app en el teléfono para que abra aunque no haya señal en el restaurante.
+// Solo borra copias viejas de esta versión: las otras versiones de la app viven en el mismo dominio.
 // Primero intenta la red (para recibir actualizaciones) y si falla usa la copia guardada.
-const CACHE = "capacitacion-demo-v1";
+const CACHE = "capacitacion-sdd-v1";
 const FILES = ["./", "./index.html", "./data.js", "./app.js", "./config.js", "./auth.js", "./pwa.js", "./manifest.webmanifest",
                "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 
@@ -10,7 +11,7 @@ self.addEventListener("install", e => {
 });
 
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith("capacitacion-sdd-") && k !== CACHE).map(k => caches.delete(k)))));
   self.clients.claim();
 });
 

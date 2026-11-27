@@ -21,13 +21,15 @@ window.startApp = (M, R) => {
   const fmt = s => { const d = parse(s); return `${d.getDate()} ${MES[d.getMonth()]}`; };
 
   /* ── Tarjetas ── */
-  const DRINK = new Set(["Bebidas", "Cocteles", "Mixología"]);
+  const DRINK = new Set(["Bebidas", "Cocteles", "Mixología", "Coctelería", "Shots", "Aguas con licor", "Preparaciones de barra"]);
+  const MANUAL = new Set(["Manual"]);
+  const askFor = cat => DRINK.has(cat) ? "¿Cómo se prepara?" : MANUAL.has(cat) ? "¿Qué incluye?" : "¿Qué lleva?";
   const CARDS = [];
   M.items.forEach(it => {
     if (it.wine) CARDS.push({ id: it.id, st: it.st, cat: it.cat, kind: "wine", title: it.name, q: "¿De dónde es, qué uva y a qué sabe?", it });
     else if (it.list) CARDS.push({ id: it.id, st: it.st, cat: it.cat, kind: "list", title: it.name, q: `Menciona las ${it.ing.length} marcas`, it });
     else {
-      if (!it.tableOnly) CARDS.push({ id: it.id, st: it.st, cat: it.cat, kind: "dish", title: it.name, q: DRINK.has(it.cat) ? "¿Cómo se prepara?" : "¿Qué lleva?", it });
+      if (!it.tableOnly) CARDS.push({ id: it.id, st: it.st, cat: it.cat, kind: "dish", title: it.name, q: askFor(it.cat), it });
       if (it.comp) CARDS.push({ id: it.id + "~c", st: it.st, cat: it.cat, kind: "comp", title: it.name, q: "¿Con qué complementos sale?", it });
     }
   });
@@ -37,8 +39,9 @@ window.startApp = (M, R) => {
   const BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
 
   /* ── Progreso: este teléfono + la cuenta del restaurante si hay sesión ── */
-  const KEY = "plantilla-demo-v1" + (R ? "-" + R.userId : "");
-  const fresh = () => ({ p: {}, log: {}, ex: [], newPer: 10, upd: 0 });
+  // Clave propia: todas las versiones viven en el mismo dominio y no deben mezclar su progreso.
+  const KEY = "sdd-capacitacion-v1" + (R ? "-" + R.userId : "");
+  const fresh = () => ({ p: {}, log: {}, ex: [], newPer: 10, upd: 0, start: today() });
   let S = fresh();
   try { const r = JSON.parse(localStorage.getItem(KEY) || "null"); if (r && r.p) S = Object.assign(fresh(), r); } catch (e) { /* sin almacenamiento */ }
   let pushTimer = 0;
@@ -82,14 +85,15 @@ window.startApp = (M, R) => {
     return n;
   }
 
-  /* ── Plan hasta diciembre ── */
-  const PLAN = [
-    { t: "Semana 1", from: "2026-11-04", to: "2026-11-10", st: [1, 2], focus: "Entradas, complementos y bebidas" },
-    { t: "Semana 2", from: "2026-11-11", to: "2026-11-17", st: [3, 4], focus: "Ensaladas, paninis, tríos y cocteles" },
-    { t: "Semana 3", from: "2026-11-18", to: "2026-11-24", st: [5, 6, 7], focus: "Pizzas, pastas, especialidades, mixología, niños y postres" },
-    { t: "Semana 4", from: "2026-11-25", to: "2026-12-01", st: [8, 9, 10], focus: "Licores, vinos, códigos y simulacros" },
-    { t: "Diciembre", from: "2026-12-02", to: "2026-12-31", st: [], focus: "Mantenimiento: sesión corta diaria y examen cada semana" }
+  /* ── Plan de 4 semanas, contado desde el día en que cada persona abre la app ── */
+  const buildPlan = s => [
+    { t: "Semana 1", from: s, to: addDays(s, 6), st: [1, 2, 3], focus: "Tostadas, aguachiles y botanas" },
+    { t: "Semana 2", from: addDays(s, 7), to: addDays(s, 13), st: [4, 5, 6], focus: "Tacos, cortes, postres y primera coctelería" },
+    { t: "Semana 3", from: addDays(s, 14), to: addDays(s, 20), st: [7, 8, 9], focus: "Coctelería, shots, salsas y preparaciones" },
+    { t: "Semana 4", from: addDays(s, 21), to: addDays(s, 27), st: [10], focus: "Manual de servicio y simulacros de examen" },
+    { t: "Después", from: addDays(s, 28), to: addDays(s, 3650), st: [], focus: "Mantenimiento: sesión corta diaria y examen cada semana" }
   ];
+  let PLAN = buildPlan(S.start || today());
   const weekIdx = (d = today()) => { const i = PLAN.findIndex(w => d >= w.from && d <= w.to); return i >= 0 ? i : (d < PLAN[0].from ? 0 : PLAN.length - 1); };
   const stageCards = n => CARDS.filter(c => c.st === n);
   function pace() {
@@ -106,8 +110,10 @@ window.startApp = (M, R) => {
   function extras(it) {
     const rows = [];
     if (it.comp) rows.push(["Sale con", it.comp.join(" + ")]);
+    if (it.vaso) rows.push(["Vaso", it.vaso]);
     if (it.gar) rows.push(["Garnitura", it.gar]);
     if (it.esc) rows.push(["Escarcha", it.esc]);
+    if (it.prep) rows.push(["Preparación", it.prep]);
     if (it.alias) rows.push(["En la tabla", it.alias]);
     if (it.note) rows.push(["Ojo", it.note]);
     return rows.length ? `<dl class="kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : "";
@@ -238,7 +244,8 @@ window.startApp = (M, R) => {
 
   /* ── Examen ── */
   let exam = null;
-  const FAMILY = { "Entradas": "comida", "Ensaladas": "comida", "Paninis clásicos": "comida", "Sándwiches Prime": "comida", "Tríos": "comida", "Pizzas": "comida", "Pastas": "comida", "Especialidades": "comida", "Niños": "comida", "Postres": "postre", "Bebidas": "bebida", "Cocteles": "bebida", "Mixología": "bebida" };
+  const FAMILY = { "Para empezar": "comida", "Botanas": "comida", "Tacos": "comida", "Cortes": "comida", "Postres": "comida", "Coctelería": "bebida", "Shots": "bebida", "Aguas con licor": "bebida", "Salsas de cocina": "prep", "Preparaciones de barra": "prep", "Manual": "manual" };
+  const isManual = it => MANUAL.has(it.cat);
   const FOOD = M.items.filter(it => !it.wine && !it.list && it.ing.length);
   const WINES = M.items.filter(it => it.wine);
   const LICORES = M.items.filter(it => it.cat === "Licores");
@@ -263,16 +270,17 @@ window.startApp = (M, R) => {
     const shown = sample(it.ing, Math.min(4, it.ing.length));
     const ds = shuffle(peers(it)).filter(o => !shown.every(s => has(o, s))).slice(0, 3);
     if (ds.length < 3) return null;
-    return { card: it.id, q: "¿Qué platillo o bebida lleva todo esto?", sub: shown.join(" · "), opts: shuffle([it.name, ...ds.map(d => d.name)]), ans: it.name, why: `${it.name}: ${it.ing.join(", ")}.` };
+    return { card: it.id, q: isManual(it) ? "¿A qué tema del manual pertenece todo esto?" : FAMILY[it.cat] === "prep" ? "¿Qué salsa o preparación lleva todo esto?" : "¿Qué platillo o bebida lleva todo esto?", sub: shown.join(" · "), opts: shuffle([it.name, ...ds.map(d => d.name)]), ans: it.name, why: `${it.name}: ${it.ing.join(", ")}.` };
   }
   function qHas(it, neg) {
     if (it.cat === "Tríos") return null;
     const foreign = uniq(peers(it).flatMap(o => o.ing)).filter(x => !has(it, x));
     if (foreign.length < 3 || it.ing.length < (neg ? 3 : 1)) return null;
-    const why = `${it.name} lleva: ${it.ing.join(", ")}.`;
-    if (neg) { const odd = pick(foreign); return { card: it.id, q: `¿Qué NO lleva ${it.name}?`, opts: shuffle([...sample(it.ing, 3), odd]), ans: odd, why }; }
+    const man = isManual(it);
+    const why = man ? `${it.name}: ${it.ing.join(", ")}.` : `${it.name} lleva: ${it.ing.join(", ")}.`;
+    if (neg) { const odd = pick(foreign); return { card: it.id, q: man ? `¿Qué NO forma parte de «${it.name}»?` : `¿Qué NO lleva ${it.name}?`, opts: shuffle([...sample(it.ing, 3), odd]), ans: odd, why }; }
     const ok = pick(it.ing);
-    return { card: it.id, q: `¿Cuál de estos sí lleva ${it.name}?`, opts: shuffle([ok, ...sample(foreign, 3)]), ans: ok, why };
+    return { card: it.id, q: man ? `¿Cuál de estos sí forma parte de «${it.name}»?` : `¿Cuál de estos sí lleva ${it.name}?`, opts: shuffle([ok, ...sample(foreign, 3)]), ans: ok, why };
   }
   function qComp(it) {
     const ans = it.comp.join(" + ");
@@ -332,7 +340,7 @@ window.startApp = (M, R) => {
       <section class="panel">
         <p class="eyebrow">Examen</p>
         <h2 class="h-display">10 preguntas, como te las haría un cliente</h2>
-        <p class="lead">Opción múltiple sobre ingredientes, complementos, vinos y códigos. Lo que falles se agrega a tu repaso de hoy.</p>
+        <p class="lead">Opción múltiple sobre platillos, cocteles, preparaciones y el manual de servicio. Lo que falles se agrega a tu repaso de hoy.</p>
         <div class="field">
           <label for="scope">¿De qué parte del menú?</label>
           <select id="scope">${scopes.map(s => `<option value="${s.v}"${s.v === examScope ? " selected" : ""}>${esc(s.t)}</option>`).join("")}</select>
@@ -420,7 +428,7 @@ window.startApp = (M, R) => {
   }
   function itemRow(it) {
     const st = itemState(it);
-    const text = norm([it.name, it.alias, ...it.ing || [], ...it.comp || [], it.gar, it.esc, it.origin, it.grape, it.notes, it.note].filter(Boolean).join(" "));
+    const text = norm([it.name, it.alias, ...it.ing || [], ...it.comp || [], it.gar, it.esc, it.vaso, it.prep, it.origin, it.grape, it.notes, it.note].filter(Boolean).join(" "));
     const body = it.wine
       ? `<p class="ri-ing">${esc(it.origin)} · <b>${esc(it.grape)}</b></p><p class="ri-ing muted">${esc(it.notes)}</p>`
       : it.ing.length ? `<p class="ri-ing">${it.ing.map(esc).join('<span class="sep"> · </span>')}</p>` : "";
@@ -428,6 +436,7 @@ window.startApp = (M, R) => {
     if (it.comp) meta.push(`<span class="pill">Sale con: ${esc(it.comp.join(" + "))}</span>`);
     if (it.gar) meta.push(`<span class="pill soft">Garnitura: ${esc(it.gar)}</span>`);
     if (it.esc) meta.push(`<span class="pill soft">Escarcha: ${esc(it.esc)}</span>`);
+    if (it.vaso) meta.push(`<span class="pill soft">Vaso: ${esc(it.vaso)}</span>`);
     if (it.copa) meta.push('<span class="pill soft">También por copa</span>');
     if (it.alias) meta.push(`<span class="pill soft">En la tabla: ${esc(it.alias)}</span>`);
     if (it.note) meta.push(`<span class="pill warn">${esc(it.note)}</span>`);
@@ -458,7 +467,7 @@ window.startApp = (M, R) => {
     $("#v-guia").innerHTML = `
       <div class="g-tools">
         <label class="sr" for="gq">Buscar en el menú</label>
-        <input id="gq" type="search" placeholder="Busca platillo o ingrediente: atún, pistacho, ranch…" autocomplete="off" value="${esc(guideQuery)}">
+        <input id="gq" type="search" placeholder="Busca platillo o ingrediente: pulpo, mezcal, Tajín…" autocomplete="off" value="${esc(guideQuery)}">
         <nav class="g-nav" aria-label="Etapas">${M.stages.map(s => `<button class="chip" data-jump="e${s.n}">E${s.n}</button>`).join("")}</nav>
         <p class="g-count" id="gcount" aria-live="polite"></p>
       </div>
@@ -479,7 +488,7 @@ window.startApp = (M, R) => {
   /* ── Plan ── */
   let confirmReset = false;
   function renderPlan() {
-    const t = today(), pc = pace(), left = daysBetween(t, "2026-12-01");
+    const t = today(), pc = pace(), left = daysBetween(t, PLAN[PLAN.length - 1].from);
     const nSeen = CARDS.filter(seen).length, nMast = CARDS.filter(mastered).length;
     const weeks = PLAN.map((w, i) => {
       const cs = CARDS.filter(c => w.st.includes(c.st));
@@ -489,12 +498,12 @@ window.startApp = (M, R) => {
         const sc = stageCards(n), v = sc.filter(seen).length, m = sc.filter(mastered).length;
         return `<li><span class="b-name">E${n} · ${esc(M.stages[n - 1].t)}</span><span class="bar" role="img" aria-label="${m} de ${sc.length} dominadas"><span class="m-seen" style="width:${(v / sc.length) * 100}%"></span><span class="m-mast" style="width:${(m / sc.length) * 100}%"></span></span><span class="b-num">${m}/${sc.length}</span></li>`;
       }).join("");
-      return `<li class="wk${i === pc.w ? " now" : ""}"><div class="wk-h"><b>${esc(w.t)}</b><span class="muted">${fmt(w.from)} – ${fmt(w.to)}</span>${chip}</div><p class="wk-f">${esc(w.focus)}</p>${bars ? `<ul class="bars">${bars}</ul>` : ""}</li>`;
+      return `<li class="wk${i === pc.w ? " now" : ""}"><div class="wk-h"><b>${esc(w.t)}</b><span class="muted">${fmt(w.from)}${i === PLAN.length - 1 ? " en adelante" : ` – ${fmt(w.to)}`}</span>${chip}</div><p class="wk-f">${esc(w.focus)}</p>${bars ? `<ul class="bars">${bars}</ul>` : ""}</li>`;
     }).join("");
     const opts = [6, 8, 10, 12, 15, 20].map(n => `<option value="${n}"${n === S.newPer ? " selected" : ""}>${n} nuevas por día</option>`).join("");
     $("#v-plan").innerHTML = `
       <section class="panel">
-        <p class="eyebrow">${left > 0 ? `Faltan ${left} días para el 1 de diciembre` : "Ya es diciembre: toca mantener"}</p>
+        <p class="eyebrow">${left > 0 ? `Faltan ${left} días para terminar tu plan` : "Plan terminado: toca mantener"}</p>
         <h2 class="h-display">Plan de 4 semanas</h2>
         <div class="counts"><div><b>${nMast}</b><span>dominadas</span></div><div><b>${nSeen}</b><span>vistas</span></div><div><b>${CARDS.length}</b><span>en total</span></div></div>
         <ol class="weeks">${weeks}</ol>
@@ -647,7 +656,7 @@ window.startApp = (M, R) => {
       case "examquit": exam = null; return renderExam();
       case "reset": confirmReset = true; return renderPlan();
       case "resetno": confirmReset = false; return renderPlan();
-      case "resetyes": S = fresh(); confirmReset = false; save(); return renderPlan();
+      case "resetyes": S = fresh(); PLAN = buildPlan(S.start); confirmReset = false; save(); return renderPlan();
       case "logout": return R.signOut();
       case "csv": return downloadCSV();
       case "teamreload": team = null; teamMsg = ""; return renderEquipo();

@@ -3,46 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Capacitación</title>
-<meta name="description" content="Tarjetas, examen y guía para capacitar al personal del restaurante.">
+<title>Sala de Despecho · Capacitación</title>
+<meta name="description" content="Tarjetas, examen y guía del menú y el manual de servicio de Sala de Despecho.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Capacitación">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#19201B" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-title" content="Sala de Despecho">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#0D0F10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 /* Layout: una columna de 680px; barra fija con pestañas arriba; la tarjeta de estudio imita una comanda de cocina. */
+/* Paleta de Sala de Despecho (tomada de saladedespecho.mx): negro de cantina, dorado del logotipo y verde menta del micrófono.
+   Siempre oscura, como el lugar. */
 :root {
-  --bg: #F2F4EF; --surface: #FFFFFF; --ink: #18201A; --muted: #5A665C; --line: #D8DFD5;
-  --accent: #2E6A41; --accent-2: #E1EFE4; --on-accent: #FFFFFF;
-  --mark: #A86F05; --mark-2: #FAEFD6;
-  --bad: #B23B2A; --bad-2: #F8E2DD;
-  --f-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
-  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bg: #0D0F10; --surface: #17191B; --ink: #F2EDE4; --muted: #A59E94; --line: #2C2F31;
+  --accent: #D9A25F; --accent-2: #2A2116; --on-accent: #0D0F10;
+  --mark: #92E1D8; --mark-2: #12302C;
+  --bad: #EF7A63; --bad-2: #3A1A14;
+  --f-display: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
   --r: 10px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #101511; --surface: #19201B; --ink: #E5EBE5; --muted: #9AA69C; --line: #2A342C;
-    --accent: #74C08B; --accent-2: #1E3224; --on-accent: #0C1910;
-    --mark: #E8B44C; --mark-2: #392D13;
-    --bad: #EC7C67; --bad-2: #3A1F1A;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #101511; --surface: #19201B; --ink: #E5EBE5; --muted: #9AA69C; --line: #2A342C;
-  --accent: #74C08B; --accent-2: #1E3224; --on-accent: #0C1910;
-  --mark: #E8B44C; --mark-2: #392D13;
-  --bad: #EC7C67; --bad-2: #3A1F1A;
   color-scheme: dark;
 }
 
@@ -63,8 +49,8 @@ button, select, input { font: inherit; color: inherit; }
 /* Barra superior */
 .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
 .top-in { padding-block: 12px 0; display: grid; gap: 10px; }
-.brand-k { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.brand h1 { font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
+.brand-k { font-family: var(--f-display); font-weight: 700; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+.brand h1 { font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.02em; }
 .tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
 .tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 4px 9px; font-weight: 700; color: var(--muted); cursor: pointer; }
 .tabs button[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
@@ -113,7 +99,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; padding: 1px 5px; border-radi
 .progress span { display: block; height: 100%; background: var(--accent); transition: width .25s ease; }
 
 /* Comanda (tarjeta de estudio) */
-.ticket { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0 22px 22px; display: grid; gap: 10px; box-shadow: 0 1px 0 var(--line), 0 10px 24px -18px rgba(0,0,0,.35); }
+.ticket { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 0 22px 22px; display: grid; gap: 10px; box-shadow: 0 1px 0 var(--line), 0 10px 24px -18px rgba(0,0,0,.8); }
 .tk-head { display: flex; justify-content: space-between; gap: 12px; margin: 0 -22px; padding: 10px 22px; border-bottom: 2px dashed var(--line); font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tk-tag { justify-self: start; font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; margin-top: 8px; }
 .tag-new { background: var(--mark-2); color: var(--ink); }
@@ -237,7 +223,7 @@ select, input[type="search"], input[type="email"] { width: 100%; min-height: 46p
 .install .txt b { display: block; font-size: 1rem; color: var(--ink); }
 .install .btn { min-height: 40px; padding: 8px 14px; }
 .install .x { background: none; border: 0; color: var(--muted); font-size: 24px; line-height: 1; padding: 4px; cursor: pointer; }
-.sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, .45); display: flex; align-items: flex-end; justify-content: center; }
+.sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, .65); display: flex; align-items: flex-end; justify-content: center; }
 .sheet { width: 100%; max-width: 480px; background: var(--surface); color: var(--ink); border-radius: 18px 18px 0 0; padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); display: grid; gap: 14px; }
 .sheet h3 { font-family: var(--f-display); font-weight: 800; font-size: 1.3rem; }
 .sheet ol { margin: 0; padding-left: 22px; display: grid; gap: 12px; }
@@ -268,8 +254,8 @@ select, input[type="search"], input[type="email"] { width: 100%; min-height: 46p
 <header class="top">
   <div class="top-in wrap">
     <div class="brand">
-      <p class="brand-k">Restaurante Demo · Capacitación</p>
-      <h1>De runner a mesero</h1>
+      <p class="brand-k">Sala de Despecho</p>
+      <h1>Capacitación de piso</h1>
     </div>
     <nav class="tabs" aria-label="Secciones" hidden>
       <button data-tab="hoy" aria-current="page">Hoy</button>
@@ -303,7 +289,7 @@ select, input[type="search"], input[type="email"] { width: 100%; min-height: 46p
     <ol>
       <li>Toca <b>Compartir</b> <svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg> en la barra de Safari (si no lo ves, toca <b>•••</b> y luego <b>Compartir</b>).</li>
       <li>Desliza hacia abajo y elige <b>Agregar a inicio</b>.</li>
-      <li>Toca <b>Agregar</b>. Listo: abre <b>Capacitación</b> desde tu pantalla de inicio.</li>
+      <li>Toca <b>Agregar</b>. Listo: abre <b>Sala de Despecho</b> desde tu pantalla de inicio.</li>
     </ol>
     <p class="note">Instálala antes de empezar a estudiar: lo que avances en Safari no pasa a la app instalada. Si borras el ícono, se borra tu progreso.</p>
     <button class="btn primary big" id="iosOk">Entendido</button>
@@ -312,7 +298,7 @@ select, input[type="search"], input[type="email"] { width: 100%; min-height: 46p
 
 <footer class="foot wrap">
   <p id="sync">Tu progreso se guarda en este teléfono. Si borras la app o los datos del navegador, se pierde.</p>
-  <p>Menú de muestra para capacitación, Etapas 1 a 10. Ante cualquier alergia, confirma siempre con cocina.</p>
+  <p>Menú, coctelería y manual de servicio de Sala de Despecho, Etapas 1 a 10. Ante cualquier alergia, confirma siempre con cocina. <i>Todxs tenemos un ex.</i></p>
   <p><a href="privacidad.html">Aviso de privacidad</a></p>
 </footer>
 
