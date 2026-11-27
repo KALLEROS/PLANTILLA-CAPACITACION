@@ -1,10 +1,11 @@
-# Publica la página con las tres versiones juntas cada vez que se suben cambios:
+# Publica la página con las cuatro versiones juntas cada vez que se suben cambios:
 #   /         → rama main (versión principal)
 #   /prueba/  → rama inicio-sesion (versión con inicio de sesión, para probar)
 #   /sin-marca/ → rama sin-marca (demostración sin marca ni inicio de sesión)
-# La rama sin-marca no dispara la publicación (GitHub Pages solo acepta main e inicio-sesion):
+#   /sala-de-despecho/ → rama sala-de-despecho (piloto de Sala de Despecho, sin inicio de sesión)
+# Las ramas sin-marca y sala-de-despecho no disparan la publicación (GitHub Pages solo acepta main e inicio-sesion):
 # se publica al subir algo a esas ramas o al correr esta acción a mano.
-# Este archivo debe ser igual en las tres ramas.
+# Este archivo debe ser igual en las cuatro ramas.
 name: Publicar app
 
 on:
@@ -43,8 +44,13 @@ jobs:
         with:
           ref: sin-marca
           path: sitio/sin-marca
+      - name: Versión Sala de Despecho (sala-de-despecho) en /sala-de-despecho/
+        uses: actions/checkout@v5
+        with:
+          ref: sala-de-despecho
+          path: sitio/sala-de-despecho
       - name: Quitar lo que no es parte de la página
-        run: rm -rf sitio/.git sitio/.github sitio/prueba/.git sitio/prueba/.github sitio/sin-marca/.git sitio/sin-marca/.github
+        run: rm -rf sitio/.git sitio/.github sitio/prueba/.git sitio/prueba/.github sitio/sin-marca/.git sitio/sin-marca/.github sitio/sala-de-despecho/.git sitio/sala-de-despecho/.github
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
